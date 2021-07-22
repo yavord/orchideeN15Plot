@@ -1,0 +1,5 @@
+testIdeas
+
+numerically compare all fluxes/pools
+1 pool with various fluxes
+sub, flux, and receiving pool
