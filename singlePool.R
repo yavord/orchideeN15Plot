@@ -1,5 +1,7 @@
 library(ncdf4)
 library(ggplot2)
+theme_set(theme_minimal())
+
 
 # This script takes an .nc file output from ORCHIDEE and plots the pool and all
 # corresponding fluxes for a nitrogen species
@@ -7,7 +9,7 @@ library(ggplot2)
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "short_20100101_20101231_1M_stomate_history.nc"
+ncname <- "nh4FungTest2.nc"
 ncfname <- paste(ncpath,ncname,sep = "")
 
 # open ncdf
@@ -41,9 +43,3 @@ f3slice <- f3array[pft,]
 f4slice <- f4array[pft,]
 
 # plot slices
-plot(pslice, type = "b", col = "red")
-lines(p15slice, type = "b", col = "blue")
-lines(f1slice, type = "b", col = "green")
-lines(f2slice, type = "b", col = "purple")
-lines(f3slice, type = "b", col = "pink")
-lines(f4slice, type = "b", col = "orange")
