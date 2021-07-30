@@ -13,8 +13,8 @@ library(gridExtra)
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "no3Test1.nc"
-varname <- "varAll.csv"
+ncname <- "final.nc"
+varname <- "var.csv"
 ncfname <- paste(ncpath,ncname,sep = "")
 varfname <- paste(ncpath,varname,sep = "")
 
