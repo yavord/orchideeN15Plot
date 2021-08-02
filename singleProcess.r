@@ -6,7 +6,6 @@ theme_set(theme_minimal())
 
 # This script takes an .nc file output from ORCHIDEE and returns a plot of all
 # fluxes and pools for nitrification and denitrification
-# ,poolSub,poolSub_15,flux,flux_15
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
@@ -20,3 +19,6 @@ ncin <- nc_open(ncfname)
 # open csv of process names
 var_name <- read.csv(varfname)
 
+for (row in 1:nrow(var_name)) {
+  pools <- as.list(el(strsplit(toString(var_name[row,1]), "-")))
+}
