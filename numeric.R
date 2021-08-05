@@ -40,8 +40,7 @@ for (row in 1:nrow(var_names)) {
   n15_array <- ncvar_get(ncin,n15_name) * 2
   
   # Get mean relative difference
-  print(all.equal(n15_array, nTot_array))
-  MRD <- all.equal(n15_array, nTot_array) %>%
+  MRD <- all.equal(n15_array, nTot_array, tolerance = 10^-8) %>%
     str_split(": ") %>% 
     unlist()
 
