@@ -56,4 +56,11 @@ plot_rows <- function(data, var_row) {
 # norm <- predict(pp, denitrifDf)
 # log <- log(denitrifDf)  
 
-plots <- lapply(var_names[1:4,], plot_row, data = ncin)
+# plots <- lapply(var_names[1:4,], plot_row, data = ncin)
+
+test <- plot_rows(ncin, var_names[3,])
+# ggsave(
+#   filename = '1.png',
+#   plot = test,
+#   device = 'png'
+# )
