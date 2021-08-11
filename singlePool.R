@@ -1,5 +1,7 @@
 library(ncdf4)
 library(ggplot2)
+library(dplyr)
+library(magrittr)
 theme_set(theme_minimal())
 
 
@@ -9,37 +11,61 @@ theme_set(theme_minimal())
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "nh4FungTest2.nc"
+ncname <- "anspin.nc"
 ncfname <- paste(ncpath,ncname,sep = "")
+
+varname <- "pools/otherPools.csv"
+varfname <- paste(ncpath,varname,sep = "")
 
 # open ncdf
 ncin <- nc_open(ncfname)
+# open variable names
+var_names <- read.csv(varfname)
 
+plot_all <- function(data, all_var) {
+  # convert vars from int to char
+  to_char <- mutate_all(.tbl = all_var, as.character)
+  
+  # create empty data frame for plot data
+  plot_df <- data.frame()
+  
+  pft <- 5 # TODO: average out over all PFTs?
+  
+  # For PFT add all 365 days to plot_df
+  for(i in 1:nrow(to_char)) {
+    for (j in 1:ncol(to_char)) {
+      plot_df <- rbind(plot_df, ncvar_get(data,to_char[i,j])[pft,])
+    }
+  }
+  
+  # transpose and change row names for ggplot
+  plot_df <- t(plot_df) %>% as.data.frame()
+  rownames(plot_df) <- c(1:nrow(plot_df))
 
+  # return ggplot of final plot
+  return(
+    ggplot(plot_df, aes(x=1:365))+
+      scale_x_continuous(name = "Day", breaks = seq(0,365,50))+
+      scale_y_continuous(name = "gN", trans = 'log10')+
+      geom_line(aes(y=plot_df[,1]), color = 'darkred')+
+      geom_line(aes(y=plot_df[,2]), color = 'darkred', linetype='dashed')+
+      geom_line(aes(y=plot_df[,3]), color = 'cadetblue')+
+      geom_line(aes(y=plot_df[,4]), color = 'cadetblue', linetype='dashed')+
+      geom_line(aes(y=plot_df[,5]), color = 'lightpink4')+
+      geom_line(aes(y=plot_df[,6]), color = 'lightpink4', linetype='dashed')+
+      geom_line(aes(y=plot_df[,7]), color = 'green4')+
+      geom_line(aes(y=plot_df[,8]), color = 'green4', linetype='dashed')+
+      geom_line(aes(y=plot_df[,9]), color = 'tomato')+
+      geom_line(aes(y=plot_df[,10]), color = 'tomato', linetype='dashed')+
+      geom_line(aes(y=plot_df[,11]), color = 'orange')+
+      geom_line(aes(y=plot_df[,12]), color = 'orange', linetype='dashed')
+  )
+}
 
-# # variable names
-# pname <- "SOIL_NOX"
-# p15name <- "SOIL_NOX_15"
-# f1name <- "NITRIFICATION_N15_3"
-# f2name <- "DENITRIFICATION1"
-# f3name <- "DENITRIFICATION2"
-# f4name <- "NOX_15_EMISSION"
-# 
-# # create arrays from variable names
-# parray <- log(ncvar_get(ncin,pname))
-# p15array <- log(ncvar_get(ncin,p15name))
-# f1array <- log(ncvar_get(ncin,f1name))
-# f2array <- log(ncvar_get(ncin,f2name))
-# f3array <- log(ncvar_get(ncin,f3name))
-# f4array <- log(ncvar_get(ncin,f4name))
-# 
-# # select pft for slices
-# pft <- 1
-# 
-# # slice data based on pft
-# pslice <- parray[pft,]
-# p15slice <- p15array[pft,]
-# f1slice <- f1array[pft,]
-# f2slice <- f2array[pft,]
-# f3slice <- f3array[pft,]
-# f4slice <- f4array[pft,]
+f_plot <- plot_all(ncin,var_names)
+ggsave(
+  filename = "pool.png",
+  plot = f_plot,
+  device = 'png',
+  bg = 'white'
+)

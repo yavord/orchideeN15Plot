@@ -34,6 +34,7 @@ plot_rows <- function(data, var_row) {
   pool2_array <- ncvar_get(data,to_char[5])
   pool2_15_array <- ncvar_get(data,to_char[6])
 
+  # TODO: average out for all PFTs?
   pft <- 1
 
   plot_df <- data.frame(
@@ -44,7 +45,7 @@ plot_rows <- function(data, var_row) {
     pool2_array[pft,],
     pool2_15_array[pft,]
   )
-
+  
   return(
     ggplot(plot_df, aes(x=1:365))+
     # ggplot(plot_df, aes(x=1:12))+
@@ -61,11 +62,11 @@ plot_rows <- function(data, var_row) {
   )
 }
 
-# plots <- lapply(var_names[1:4,], plot_row, data = ncin)
+# plots <- lapply(var_names[1:2,], plot_row, data = ncin)
 
-f_plot <- plot_rows(ncin, var_names[2,])
+f_plot <- plot_rows(ncin, var_names[1,])
 ggsave(
-  filename = '1.png',
+  filename = 'process.png',
   plot = f_plot,
   device = 'png',
   bg = 'white'
