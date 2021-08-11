@@ -9,7 +9,7 @@ theme_set(theme_minimal())
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "final1.nc"
+ncname <- "anspin.nc"
 varname <- "varProcess.csv"
 ncfname <- paste(ncpath,ncname,sep = "")
 varfname <- paste(ncpath,varname,sep = "")
@@ -40,27 +40,23 @@ plot_rows <- function(data, var_row) {
   )
 
   return(
-    ggplot(plot_df, aes(x=1:12))+
+    ggplot(plot_df, aes(x=1:365))+
       labs(y="gN")+
-      scale_x_continuous(name = "Month", breaks = seq(1,12,1))+
+      scale_x_continuous(name = "Day", breaks = seq(0,365,50))+
+      scale_y_continuous(trans = 'log10')+
       geom_line(aes(y=plot_df[,1]), color = 'darkred')+
       geom_line(aes(y=plot_df[,2]), color = 'darkred', linetype='dashed')+
       geom_line(aes(y=plot_df[,3]), color = 'steelblue')+
-      geom_line(aes(y=plot_df[,3]), color = 'steelblue', linetype='dashed')
+      geom_line(aes(y=plot_df[,4]), color = 'steelblue', linetype='dashed')
   )
 }
-
-# center and scale data
-# pp <- preProcess(denitrifDf, method = c("range"))
-# # pp <- preProcess(denitrifDf, method = c("scale","center"))
-# norm <- predict(pp, denitrifDf)
-# log <- log(denitrifDf)  
 
 # plots <- lapply(var_names[1:4,], plot_row, data = ncin)
 
 test <- plot_rows(ncin, var_names[3,])
-# ggsave(
-#   filename = '1.png',
-#   plot = test,
-#   device = 'png'
-# )
+ggsave(
+  filename = '1.png',
+  plot = test,
+  device = 'png',
+  bg = 'white'
+)

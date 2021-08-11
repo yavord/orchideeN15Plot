@@ -13,7 +13,7 @@ library(gridExtra)
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "final1.nc"
+ncname <- "anspin.nc"
 varname <- "var.csv"
 ncfname <- paste(ncpath,ncname,sep = "")
 varfname <- paste(ncpath,varname,sep = "")
@@ -56,5 +56,3 @@ diff_df[is.na(diff_df)] <- 0
 jpeg(outfname)
 grid.table(diff_df)
 dev.off()
-
-
