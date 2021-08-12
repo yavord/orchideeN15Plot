@@ -9,7 +9,7 @@ theme_set(theme_minimal())
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "anspin.nc"
+ncname <- "anspin2.nc"
 varname <- "process.csv"
 ncfname <- paste(ncpath,ncname,sep = "")
 varfname <- paste(ncpath,varname,sep = "")
@@ -40,7 +40,7 @@ plot_rows <- function(data, var_row) {
   plot_df <- t(plot_df) %>% as.data.frame()
   rownames(plot_df) <- c(1:nrow(plot_df))
 
-  # plot
+  # return final plot
   return(
     ggplot(plot_df, aes(x=1:365))+
       scale_x_continuous(name = "Day", breaks = seq(0,365,50))+
@@ -54,6 +54,7 @@ plot_rows <- function(data, var_row) {
   )
 }
 
+# select row to plot
 f_plot <- plot_rows(ncin, var_names[1,])
 ggsave(
   filename = 'process.png',

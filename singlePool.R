@@ -11,7 +11,7 @@ theme_set(theme_minimal())
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "anspin.nc"
+ncname <- "anspin2.nc"
 ncfname <- paste(ncpath,ncname,sep = "")
 
 varname <- "pools/otherPools.csv"
