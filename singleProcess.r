@@ -25,34 +25,26 @@ dash_to_list <- function(x) {
 }
 
 plot_rows <- function(data, var_row) {
+  # convert var to char
   to_char <- sapply(var_row,as.character)
+  # init empty df
+  plot_df <- data.frame()
   
-  pool_array <- ncvar_get(data,to_char[1])
-  pool_15_array <- ncvar_get(data,to_char[2])
-  flux_array <- ncvar_get(data,to_char[3])
-  flux15_array <- ncvar_get(data,to_char[4])
-  pool2_array <- ncvar_get(data,to_char[5])
-  pool2_15_array <- ncvar_get(data,to_char[6])
-
-  # TODO: average out for all PFTs?
-  pft <- 1
-
-  plot_df <- data.frame(
-    pool_array[pft,],
-    pool_15_array[pft,],
-    flux_array[pft,],
-    flux15_array[pft,],
-    pool2_array[pft,],
-    pool2_15_array[pft,]
-  )
+  # for avg of PFTs add all 365 days to plot_df
+  for(i in 1:length(to_char)) {
+    var_mean <- apply(ncvar_get(data, to_char[i]), 2, mean)
+    plot_df <- rbind(plot_df, var_mean)
+  }
   
+  # transpose for ggplot
+  plot_df <- t(plot_df) %>% as.data.frame()
+  rownames(plot_df) <- c(1:nrow(plot_df))
+
+  # plot
   return(
     ggplot(plot_df, aes(x=1:365))+
-    # ggplot(plot_df, aes(x=1:12))+
-      labs(y="gN")+
       scale_x_continuous(name = "Day", breaks = seq(0,365,50))+
-      # scale_x_continuous(name = "Month", breaks = seq(1,12,1))+
-      scale_y_continuous(trans = 'log10')+
+      scale_y_continuous(name = "gN", trans = 'log10')+
       geom_line(aes(y=plot_df[,1]), color = 'darkred')+
       geom_line(aes(y=plot_df[,2]), color = 'darkred', linetype='dashed')+
       geom_line(aes(y=plot_df[,3]), color = 'steelblue')+
@@ -61,8 +53,6 @@ plot_rows <- function(data, var_row) {
       geom_line(aes(y=plot_df[,6]), color = 'orange', linetype='dashed')
   )
 }
-
-# plots <- lapply(var_names[1:2,], plot_row, data = ncin)
 
 f_plot <- plot_rows(ncin, var_names[1,])
 ggsave(

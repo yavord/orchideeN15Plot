@@ -29,19 +29,18 @@ plot_all <- function(data, all_var) {
   # create empty data frame for plot data
   plot_df <- data.frame()
   
-  pft <- 5 # TODO: average out over all PFTs?
-  
-  # For PFT add all 365 days to plot_df
+  # For avg of PFTs add all 365 days to plot_df
   for(i in 1:nrow(to_char)) {
     for (j in 1:ncol(to_char)) {
-      plot_df <- rbind(plot_df, ncvar_get(data,to_char[i,j])[pft,])
+      var_mean <- apply(ncvar_get(data,to_char[i,j]), 2, mean) # mean of all PFTs
+      plot_df <- rbind(plot_df, var_mean)
     }
   }
   
   # transpose and change row names for ggplot
   plot_df <- t(plot_df) %>% as.data.frame()
   rownames(plot_df) <- c(1:nrow(plot_df))
-
+  
   # return ggplot of final plot
   return(
     ggplot(plot_df, aes(x=1:365))+
