@@ -13,7 +13,7 @@ library(gridExtra)
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "anspin.nc"
+ncname <- "anspin2.nc"
 varname <- "var.csv"
 ncfname <- paste(ncpath,ncname,sep = "")
 varfname <- paste(ncpath,varname,sep = "")
@@ -40,7 +40,7 @@ for (row in 1:nrow(var_names)) {
   n15_array <- ncvar_get(ncin,n15_name) * 2
   
   # Get mean relative difference
-  MRD <- all.equal(n15_array, nTot_array, tolerance = 10^-8) %>%
+  MRD <- all.equal(n15_array, nTot_array, tolerance = 10^-10) %>%
     str_split(": ") %>% 
     unlist()
 

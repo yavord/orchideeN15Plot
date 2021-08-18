@@ -41,17 +41,52 @@ plot_rows <- function(data, var_row) {
   rownames(plot_df) <- c(1:nrow(plot_df))
 
   # return final plot
+  # nitrification
   return(
     ggplot(plot_df, aes(x=1:365))+
       scale_x_continuous(name = "Day", breaks = seq(0,365,50))+
       scale_y_continuous(name = "gN", trans = 'log10')+
-      geom_line(aes(y=plot_df[,1]), color = 'darkred')+
+      geom_line(aes(y=plot_df[,1], linetype = 'solid'), color = 'black')+
+      geom_line(aes(y=plot_df[,1], color = 'darkred'))+
+      geom_line(aes(y=plot_df[,2], linetype='dashed'), color = 'black')+
       geom_line(aes(y=plot_df[,2]), color = 'darkred', linetype='dashed')+
-      geom_line(aes(y=plot_df[,3]), color = 'steelblue')+
+      geom_line(aes(y=plot_df[,3], color = 'steelblue'))+
       geom_line(aes(y=plot_df[,4]), color = 'steelblue', linetype='dashed')+
-      geom_line(aes(y=plot_df[,5]), color = 'orange')+
-      geom_line(aes(y=plot_df[,6]), color = 'orange', linetype='dashed')
+      geom_line(aes(y=plot_df[,5], color = 'orange'))+
+      geom_line(aes(y=plot_df[,6]), color = 'orange', linetype='dashed')+
+      scale_color_identity(name = 'Pool or flux type',
+                           breaks = c('darkred', 'steelblue', 'orange'),
+                           labels = c('Soil NH4', 'Nitrification NH4 to NO3',
+                                      'Soil NO3'),
+                           guide = "legend")+
+      scale_linetype_identity(name = 'Isotope type',
+                              breaks = c('solid', 'dashed'),
+                              labels = c('Total N', '15N'),
+                              guide = "legend")
   )
+  # denitrification
+  # return(
+  #   ggplot(plot_df, aes(x=1:365))+
+  #     scale_x_continuous(name = "Day", breaks = seq(0,365,50))+
+  #     scale_y_continuous(name = "gN", trans = 'log10')+
+  #     geom_line(aes(y=plot_df[,1], linetype = 'solid'), color = 'black')+
+  #     geom_line(aes(y=plot_df[,1], color = 'darkred'))+
+  #     geom_line(aes(y=plot_df[,2], linetype='dashed'), color = 'black')+
+  #     geom_line(aes(y=plot_df[,2]), color = 'darkred', linetype='dashed')+
+  #     geom_line(aes(y=plot_df[,3], color = 'steelblue'))+
+  #     geom_line(aes(y=plot_df[,4]), color = 'steelblue', linetype='dashed')+
+  #     geom_line(aes(y=plot_df[,5], color = 'orange'))+
+  #     geom_line(aes(y=plot_df[,6]), color = 'orange', linetype='dashed')+
+  #     scale_color_identity(name = 'Pool or flux type',
+  #                          breaks = c('darkred', 'steelblue', 'orange'),
+  #                          labels = c('Soil N2O', 'Denitrification N2O to N2',
+  #                                     'Soil N2'),
+  #                          guide = "legend")+
+  #     scale_linetype_identity(name = 'Isotope type',
+  #                             breaks = c('solid', 'dashed'),
+  #                             labels = c('Total N', '15N'),
+  #                             guide = "legend")
+  # )
 }
 
 # select row to plot
