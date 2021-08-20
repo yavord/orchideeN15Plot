@@ -1,0 +1,87 @@
+---
+title: "orchidee"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+library(ncdf4)
+library(raster)
+library(chron)
+library(lattice)
+library(RColorBrewer)
+```
+
+```{r}
+# path and filename
+ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
+ncname <- "short_20100101_20101231_1M_stomate_history.nc"
+ncfname <- paste(ncpath,ncname,sep = "")
+```
+
+```{r}
+# open ncdf
+ncin <- nc_open(ncfname)
+```
+
+```{r}
+# get dimensions
+lon <- ncvar_get(ncin,"lon")
+nlon <- dim(lon)
+
+lat <- ncvar_get(ncin,"lat")
+nlat <- dim(lat)
+
+time <- ncvar_get(ncin, "time_centered")
+tunits <- ncatt_get(ncin,"time_centered","units")
+nt <- dim(time)
+```
+
+```{r}
+# variables
+
+# ammonium n15
+dname_15 <- "SOIL_NH4_15"
+nh4_15_array <- ncvar_get(ncin,dname_15)
+dlname_15 <- ncatt_get(ncin,dname_15,"long_name")
+dunits_15 <- ncatt_get(ncin,dname_15,"units")
+fillValue_15 <- ncatt_get(ncin,dname_15,"_FillValue")
+dim(nh4_15_array)
+
+# ammonium nTOT
+dname <- "SOIL_NH4"
+nh4_array <- ncvar_get(ncin,dname)
+dlname <- ncatt_get(ncin,dname,"long_name")
+dunits <- ncatt_get(ncin,dname,"units")
+fillValue <- ncatt_get(ncin,dname,"_FillValue")
+dim(nh4_array)
+```
+
+```{r}
+# convert time format
+tustr <- strsplit(tunits$value, " ")
+tdstr <- strsplit(unlist(tustr)[3], "-")
+tmonth <- as.integer(unlist(tdstr)[3])
+tday <- as.integer(unlist(tdstr)[3])
+tyear <- as.integer(unlist(tdstr)[1])
+chron(time,origin=c(tmonth, tday, tyear))
+```
+
+```{r}
+# replace fillvalue with NA
+nh4_array[nh4_array==fillValue$value] <- NA
+nh4_15_array[nh4_15_array==fillValue_15$value] <- NA
+```
+
+```{r}
+# slice data
+pft <- 1
+nh4_15_slice <- nh4_15_array[pft,]
+nh4_slice <- nh4_array[pft,]
+```
+
+```{r}
+plot(nh4_slice, type = "b", col="red")
+lines(nh4_15_slice, type = "b", col = "blue")
+```
+
+

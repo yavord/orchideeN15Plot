@@ -11,10 +11,10 @@ theme_set(theme_minimal())
 
 # path and filename
 ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
-ncname <- "anspin.nc"
+ncname <- "anspin2.nc"
 ncfname <- paste(ncpath,ncname,sep = "")
 
-varname <- "pools/nh4Pools.csv"
+varname <- "pools/otherPools.csv"
 varfname <- paste(ncpath,varname,sep = "")
 
 # open ncdf
@@ -40,25 +40,39 @@ plot_all <- function(data, all_var) {
   # transpose and change row names for ggplot
   plot_df <- t(plot_df) %>% as.data.frame()
   rownames(plot_df) <- c(1:nrow(plot_df))
+  # plot_df <- plot_df[seq(1, nrow(plot_df), 7), ]
   
   # return ggplot of final plot
   return(
     ggplot(plot_df, aes(x=1:365))+
       scale_x_continuous(name = "Day", breaks = seq(0,365,50))+
       scale_y_continuous(name = "gN", trans = 'log10')+
-      geom_line(aes(y=plot_df[,1]), color = 'darkred')+
+      geom_line(aes(y=plot_df[,1], linetype = 'solid'), color = 'black')+
+      geom_line(aes(y=plot_df[,2], linetype='dashed'), color = 'black')+
+      geom_line(aes(y=plot_df[,1], color = 'darkred'))+
       geom_line(aes(y=plot_df[,2]), color = 'darkred', linetype='dashed')+
-      geom_line(aes(y=plot_df[,3]), color = 'cadetblue')+
+      geom_line(aes(y=plot_df[,3], color = 'cadetblue'))+
       geom_line(aes(y=plot_df[,4]), color = 'cadetblue', linetype='dashed')+
-      geom_line(aes(y=plot_df[,5]), color = 'lightpink4')+
-      geom_line(aes(y=plot_df[,6]), color = 'lightpink4', linetype='dashed')+
-      geom_line(aes(y=plot_df[,7]), color = 'green4')+
+      geom_line(aes(y=plot_df[,5], color = 'darkorchid'))+
+      geom_line(aes(y=plot_df[,6]), color = 'darkorchid', linetype='dashed')+
+      geom_line(aes(y=plot_df[,7], color = 'green4'))+
       geom_line(aes(y=plot_df[,8]), color = 'green4', linetype='dashed')+
-      geom_line(aes(y=plot_df[,9]), color = 'tomato')+
+      geom_line(aes(y=plot_df[,9], color = 'tomato'))+
       geom_line(aes(y=plot_df[,10]), color = 'tomato', linetype='dashed')+
-      geom_line(aes(y=plot_df[,11]), color = 'orange')+
-      geom_line(aes(y=plot_df[,12]), color = 'orange', linetype='dashed')
-  )
+      geom_line(aes(y=plot_df[,11], color = 'orange'))+
+      geom_line(aes(y=plot_df[,12]), color = 'orange', linetype='dashed')+
+      scale_linetype_identity(name = 'Isotope type',
+                              breaks = c('solid', 'dashed'),
+                              labels = c('Total N', '15N'),
+                              guide = "legend")+
+      scale_color_identity(name = 'Pool or flux type',
+                           breaks = c('darkred', 'cadetblue', 'darkorchid', 
+                                      'green4', 'tomato', 'orange'),
+                           labels = c('Soil NOx', 'Soil N2O', 'Soil N2', 
+                                      'NOx Emissions', 'N2O Emissions', 
+                                      'N2 Emissions'),
+                           guide = "legend")
+      )
 }
 
 f_plot <- plot_all(ncin,var_names)
