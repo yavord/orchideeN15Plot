@@ -19,36 +19,45 @@ var_names <- read.csv(varfname,header = T)
 
 plot_rows <- function(data, var) {
   # convert var to char
-  to_char <- sapply(var,as.character)
+  to_char <- sapply(var[,6],as.character)
+  pool <- sapply(var[,5],as.character)
+  names <- sapply(var[,3],as.character)
   # init empty df
   plot_df <- data.frame()
-  
+
   # for avg of PFTs add all 365 days to plot_df
   for(i in 1:length(to_char)) {
-    var_mean <- apply(ncvar_get(data, to_char[i]), 2, mean)
-    plot_df <- rbind(plot_df, var_mean)
+    j <- apply(ncvar_get(data, to_char[i]), 2, mean)
+    s <- apply(ncvar_get(data, pool[i]), 2, mean)
+    s0 <- j + s
+    final <- s / s0
+    plot_df <- rbind(plot_df, final)
   }
+
+  x <- rep('Flux (gN/dt)',8)
   
   # transpose for ggplot
   plot_df <- t(plot_df) %>% as.data.frame()
   #find mean,max,and min of each variable
   sd <- summarise_all(plot_df, sd) %>% t
-  min <- summarise_all(plot_df, min) %>% t
-  max <- summarise_all(plot_df, max) %>% t
   means <- summarise_all(plot_df, mean) %>%
     t %>%
     bind_cols(sd) %>%
-    bind_cols(to_char)
-  
-  # rename columns for plotting
-  colnames(means) <- c("Concentration (gN)/dt", "sd", "Flux")
+    bind_cols(names)
 
+  # rename columns for plotting
+  colnames(means) <- c("f", "sd1", "Flux")
+  # means <- var
+  means <- bind_cols(means, var[,1:2])
+  
   return(
-    ggplot(data = means, aes(x=`Concentration (gN)/dt`, y=Flux))+
-      geom_bar(stat = 'identity', color = 'black', fill = 'steelblue',
-               position=position_dodge())+
-      geom_errorbar(aes(xmin=`Concentration (gN)/dt`-sd, xmax=`Concentration (gN)/dt`+sd), width=.2,
-                    position=position_dodge(.9))
+    ggplot(data = means, aes(x=f, y=Epsilon, group = Flux, color= Flux))+
+      geom_point()+
+      geom_errorbar(aes(xmin=f-sd1, xmax=f+sd1), width=.001,
+                    position=position_dodge(0.5))+
+      geom_errorbar(aes(ymin=Epsilon-sd2,ymax=Epsilon+sd2), width=.0001,
+                    position = position_dodge(0.5))+
+      ylab("Epsilon (‰)")
   )
 }
 
