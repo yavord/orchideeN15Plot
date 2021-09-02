@@ -52,11 +52,12 @@ plot_rows <- function(data, var) {
   
   return(
     ggplot(data = means, aes(x=f, y=Epsilon, group = Flux, color= Flux))+
-      geom_point()+
+      geom_point(size = 3)+
       geom_errorbar(aes(xmin=f-sd1, xmax=f+sd1), width=.001,
-                    position=position_dodge(0.5))+
+                    position=position_dodge(0.5), size = 1)+
       geom_errorbar(aes(ymin=Epsilon-sd2,ymax=Epsilon+sd2), width=.0001,
-                    position = position_dodge(0.5))+
+                    position = position_dodge(0.5), size = 1)+
+      theme(text = element_text(size = 16))+
       ylab("Epsilon (‰)")
   )
 }
