@@ -14,6 +14,7 @@ ncpath <- "/home/yavor/Documents/mint/wd/ncdf/input/"
 ncname <- "anspin2.nc"
 ncfname <- paste(ncpath,ncname,sep = "")
 
+# variable names in ORCHIDEE
 varname <- "pools/otherPools.csv"
 varfname <- paste(ncpath,varname,sep = "")
 
@@ -40,8 +41,7 @@ plot_all <- function(data, all_var) {
   # transpose and change row names for ggplot
   plot_df <- t(plot_df) %>% as.data.frame()
   rownames(plot_df) <- c(1:nrow(plot_df))
-  # plot_df <- plot_df[seq(1, nrow(plot_df), 7), ]
-  
+
   # return ggplot of final plot
   return(
     ggplot(plot_df, aes(x=1:365))+

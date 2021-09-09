@@ -19,11 +19,6 @@ ncin <- nc_open(ncfname)
 # open csv of process names
 var_names <- read.csv(varfname,header = T)
 
-# process variable names, convert dash separator to list
-dash_to_list <- function(x) {
-  return(el(strsplit(toString(x), "-")))
-}
-
 plot_rows <- function(data, var_row) {
   # convert var to char
   to_char <- sapply(var_row,as.character)

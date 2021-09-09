@@ -18,7 +18,7 @@ ncin <- nc_open(ncfname)
 var_names <- read.csv(varfname,header = T)
 
 plot_rows <- function(data, var) {
-  # convert var to char
+  # convert var to char for pool types, etc.
   to_char <- sapply(var[,6],as.character)
   pool <- sapply(var[,5],as.character)
   names <- sapply(var[,3],as.character)
@@ -34,8 +34,6 @@ plot_rows <- function(data, var) {
     plot_df <- rbind(plot_df, final)
   }
 
-  x <- rep('Flux (gN/dt)',8)
-  
   # transpose for ggplot
   plot_df <- t(plot_df) %>% as.data.frame()
   #find mean,max,and min of each variable
@@ -47,7 +45,8 @@ plot_rows <- function(data, var) {
 
   # rename columns for plotting
   colnames(means) <- c("f", "sd1", "Flux")
-  # means <- var
+  
+  # create final df for plot
   means <- bind_cols(means, var[,1:2])
   
   return(
@@ -62,6 +61,7 @@ plot_rows <- function(data, var) {
   )
 }
 
+# plot and save
 f_plot <- plot_rows(ncin, var_names)
 
 ggsave(
